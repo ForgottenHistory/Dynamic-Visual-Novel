@@ -35,49 +35,18 @@ public class World : ScriptableObject, IGetDescription
     {
         string prompt = worldName + " = " + description + "\nWorld Stats = ";
         prompt += "Population: " + population + ", ";
-        prompt += "Crime Rate: " + NumberScaleToText(crimeRate) + ", ";
-        prompt += "Pollution Rate: " + NumberScaleToText(pollutionRate) + ", ";
-        prompt += "Happiness Rate: " + NumberScaleToText(happinessRate) + ", ";
-        prompt += "Economic Richness: " + NumberScaleToText(economicRichness) + ", ";
-        prompt += "Education: " + NumberScaleToText(education) + ", ";
-        prompt += "Health: " + NumberScaleToText(health) + ", ";
-        prompt += "Beauty: " + NumberScaleToText(beauty) + ", ";
-        prompt += "Political Corruption: " + NumberScaleToText(politicalCorruption) + ", ";
-        prompt += "Religiousity: " + NumberScaleToText(religiousity) + ", ";
-        prompt += "Sexual Activity: " + NumberScaleToText(sexual) + ", ";
-        prompt += "Xenophobia: " + NumberScaleToText(xenophobia) + "\n";
+        prompt += "Crime Rate: " + NumberScaleToText.TenScaleToText(crimeRate) + ", ";
+        prompt += "Pollution Rate: " + NumberScaleToText.TenScaleToText(pollutionRate) + ", ";
+        prompt += "Happiness Rate: " + NumberScaleToText.TenScaleToText(happinessRate) + ", ";
+        prompt += "Economic Richness: " + NumberScaleToText.TenScaleToText(economicRichness) + ", ";
+        prompt += "Education: " + NumberScaleToText.TenScaleToText(education) + ", ";
+        prompt += "Health: " + NumberScaleToText.TenScaleToText(health) + ", ";
+        prompt += "Beauty: " + NumberScaleToText.TenScaleToText(beauty) + ", ";
+        prompt += "Political Corruption: " + NumberScaleToText.TenScaleToText(politicalCorruption) + ", ";
+        prompt += "Religiousity: " + NumberScaleToText.TenScaleToText(religiousity) + ", ";
+        prompt += "Sexual Activity: " + NumberScaleToText.TenScaleToText(sexual) + ", ";
+        prompt += "Xenophobia: " + NumberScaleToText.TenScaleToText(xenophobia) + "\n";
 
         return prompt;
-    }
-
-    string NumberScaleToText(int number)
-    {
-        switch (number)
-        {
-            case 0:
-                return "None";
-            case 1:
-                return "Very Low";
-            case 2:
-                return "Low";
-            case 3:
-                return "Moderate";
-            case 4:
-                return "Average";
-            case 5:
-                return "Normal";
-            case 6:
-                return "Above Average";
-            case 7:
-                return "High";
-            case 8:
-                return "Very High";
-            case 9:
-                return "Extreme";
-            case 10:
-                return "Maximum";
-            default:
-                return "Unknown";
-        }
     }
 }
