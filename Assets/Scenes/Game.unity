@@ -3118,12 +3118,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 36
+  m_fontSizeMax: 35
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
@@ -4563,7 +4563,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1820013815}
-  - component: {fileID: 1820013816}
   m_Layer: 0
   m_Name: LLM
   m_TagString: Untagged
@@ -4587,18 +4586,6 @@ Transform:
   - {fileID: 2045237753}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1820013816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1820013814}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f04515836df97b94aabbc39e69d32925, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1821798224
 GameObject:
   m_ObjectHideFlags: 0
@@ -5572,7 +5559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d480645339d3fc942ba5044d097a4e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingsFileName: Mistral OpenOrca.json
+  settingsFileName: Magnum.json
   llmClient: {fileID: 2045237751}
 --- !u!4 &2045237753
 Transform:
