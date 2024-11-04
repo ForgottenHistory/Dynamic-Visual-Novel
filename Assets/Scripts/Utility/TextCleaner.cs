@@ -43,7 +43,7 @@ public class TextCleaner
         cleanedMessage = cleanedMessage.Trim();
 
         // Fix incomplete action formatting (asterisks and capitalization)
-        cleanedMessage = FixActionFormatting(cleanedMessage);
+        // cleanedMessage = FixActionFormatting(cleanedMessage);
 
         // Capitalize sentences if requested
         if (capitalize)
@@ -148,77 +148,6 @@ public class TextCleaner
             }
             return $"*{action}*";
         });
-    }
-
-    /// <summary>
-    /// Fixes formatting for actions marked with asterisks
-    /// </summary>
-    private static string FixActionFormatting(string message)
-    {
-        if (string.IsNullOrEmpty(message)) return message;
-
-        // Handle single asterisk at the start
-        if (message.StartsWith("*") && !message.EndsWith("*"))
-        {
-            string content = message.TrimStart('*').Trim();
-            if (!EndsWithPunctuation(content))
-            {
-                content += ".";
-            }
-            
-            // Capitalize first letter after asterisk
-            if (content.Length > 0)
-            {
-                content = char.ToUpper(content[0]) + content.Substring(1);
-            }
-            
-            return $"*{content}*";
-        }
-
-        // Handle multiple actions in the same message
-        string[] parts = message.Split(new[] { "*" }, StringSplitOptions.RemoveEmptyEntries);
-        List<string> fixedParts = new List<string>();
-        bool wasLastPartAction = false;
-
-        for (int i = 0; i < parts.Length; i++)
-        {
-            string part = parts[i].Trim();
-            bool isAction = message.Contains($"*{part}") || (wasLastPartAction && !message.Contains($" {part}"));
-
-            if (isAction)
-            {
-                if (!EndsWithPunctuation(part))
-                {
-                    part += ".";
-                }
-                
-                // Capitalize first letter of action
-                if (part.Length > 0)
-                {
-                    part = char.ToUpper(part[0]) + part.Substring(1);
-                }
-                
-                fixedParts.Add($"*{part}*");
-                wasLastPartAction = true;
-            }
-            else
-            {
-                fixedParts.Add(part);
-                wasLastPartAction = false;
-            }
-        }
-
-        return string.Join(" ", fixedParts).Trim();
-    }
-
-    /// <summary>
-    /// Checks if text ends with punctuation
-    /// </summary>
-    private static bool EndsWithPunctuation(string text)
-    {
-        if (string.IsNullOrEmpty(text)) return false;
-        char lastChar = text[text.Length - 1];
-        return lastChar == '.' || lastChar == '!' || lastChar == '?' || lastChar == ':' || lastChar == ';';
     }
 
     private static string RemoveQuotationMarks(string message)

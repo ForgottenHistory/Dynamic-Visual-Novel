@@ -94,6 +94,7 @@ public class TextFormatter : MonoBehaviour
     {
         if (string.IsNullOrEmpty(input)) return input;
 
+        Debug.Log($"Formatting text: {input}");
         string formattedText = CleanExistingColorTags(input);
 
         // First ensure all style markers are properly paired
