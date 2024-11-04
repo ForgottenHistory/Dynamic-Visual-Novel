@@ -29,9 +29,8 @@ public class PromptCreator : MonoBehaviour
 
     [Header("Prompt Settings")]
     [SerializeField]
-    [TextArea(3, 10)]
-    private string systemInstructions = "You are a creative writing AI that responds in character. Keep responses concise and natural.";
-    
+    private Prompt systemInstructions;
+
     [SerializeField] private bool includeTimestamp = true;
     [Header("Components")]
     [SerializeField] private MasterReferencer masterReferencer;
@@ -173,9 +172,9 @@ public class PromptCreator : MonoBehaviour
         promptBuilder.Clear();
 
         // Add system instructions
-        if (!string.IsNullOrEmpty(systemInstructions))
+        if (!string.IsNullOrEmpty(systemInstructions.promptText))
         {
-            sections.Add(new PromptSection("System", systemInstructions));
+            sections.Add(new PromptSection("System", systemInstructions.promptText));
         }
 
         // Add timestamp if enabled
@@ -191,7 +190,7 @@ public class PromptCreator : MonoBehaviour
             promptBuilder.Clear();
             foreach (var state in worldState)
             {
-                promptBuilder.AppendLine($"{state.Key}: {state.Value}");
+                promptBuilder.AppendLine(state.Value);
             }
             sections.Add(new PromptSection("World State", promptBuilder.ToString().TrimEnd()));
         }
@@ -202,7 +201,7 @@ public class PromptCreator : MonoBehaviour
             promptBuilder.Clear();
             foreach (var desc in worldDescriptions)
             {
-                promptBuilder.AppendLine($"{desc.Key}: {desc.Value.GetDescription()}");
+                promptBuilder.AppendLine(desc.Value.GetDescription());
             }
             sections.Add(new PromptSection("World Information", promptBuilder.ToString().TrimEnd()));
         }
@@ -213,7 +212,7 @@ public class PromptCreator : MonoBehaviour
             promptBuilder.Clear();
             foreach (var loc in currentLocation)
             {
-                promptBuilder.AppendLine($"{loc.Key}: {loc.Value.GetDescription()}");
+                promptBuilder.AppendLine(loc.Value.GetDescription());
             }
             sections.Add(new PromptSection("Current Location", promptBuilder.ToString().TrimEnd()));
         }
@@ -224,7 +223,7 @@ public class PromptCreator : MonoBehaviour
             promptBuilder.Clear();
             foreach (var character in currentCharacters)
             {
-                promptBuilder.AppendLine($"{character.Key}: {character.Value.GetDescription()}");
+                promptBuilder.AppendLine(character.Value.GetDescription());
             }
             sections.Add(new PromptSection("Characters Present", promptBuilder.ToString().TrimEnd()));
         }
@@ -235,7 +234,7 @@ public class PromptCreator : MonoBehaviour
             promptBuilder.Clear();
             foreach (var evt in currentEvents)
             {
-                promptBuilder.AppendLine($"{evt.Key}: {evt.Value.GetDescription()}");
+                promptBuilder.AppendLine(evt.Value.GetDescription());
             }
             sections.Add(new PromptSection("Active Events", promptBuilder.ToString().TrimEnd()));
         }

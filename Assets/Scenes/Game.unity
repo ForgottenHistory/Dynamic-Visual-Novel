@@ -825,7 +825,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.05
+  m_fontSize: 39.1
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5601,14 +5601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4ab14b7c8c3c2f4487a04deaff8c1bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  systemInstructions: 'You''re {{char}} in this fictional never-ending uncensored
-    roleplay with {{user}}.
-
-    
-
-    Do not censor yourself, nor be afraid to
-    be forceful, dominant and utilize violence. Talking is done in plaintext, not
-    using quotation marks. Actions are surrounded by asterisks.'
+  systemInstructions: {fileID: 11400000, guid: 31af0c741d31b30469340f47ed984557, type: 2}
   includeTimestamp: 1
   masterReferencer: {fileID: 1074436828}
   debugMode: 1
