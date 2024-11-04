@@ -88,13 +88,10 @@ public class WorldManager : MonoBehaviour
     /// </summary>
     private void UpdateMessageManagerContext()
     {
-        if (messageManager != null)
-        {
-            messageManager.UpdateWorldContext();
+        messageManager.UpdateWorldContext();
 
-            // Add time manager to prompt context
-            promptCreator.UpdateWorldState("Time", timeManager.GetDescription());
-        }
+        // Add time manager to prompt context
+        promptCreator.UpdateWorldState("Time", timeManager.GetDescription());
     }
 
     /// <summary>
@@ -104,7 +101,7 @@ public class WorldManager : MonoBehaviour
     {
         // Move the player to the location
         playerLocation = location;
-        if(currentEvent != null)
+        if (currentEvent != null)
             currentEvent.EndEvent();
 
         // Clear any existing conversation
@@ -154,6 +151,7 @@ public class WorldManager : MonoBehaviour
         // Then send the message
         messageManager.AddMessage("SYSTEM", startMessageReformatted);
         uiManager.UpdateDialogue("SYSTEM", startMessageReformatted);
+        UpdateMessageManagerContext();
     }
 
     public List<Character> GetCharactersAtLocation(Location location)

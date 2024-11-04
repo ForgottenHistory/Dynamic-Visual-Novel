@@ -55,6 +55,7 @@ public class MessageManager : MonoBehaviour
         // Update characters at current location
         var charactersAtLocation = worldManager.GetCharactersAtLocation(worldManager.playerLocation);
         promptCreator.ClearCharacters(); // Clear existing characters first
+        promptCreator.ClearEvents(); // Clear existing events first
 
         // Update player data
         if (playerData != null)
@@ -68,12 +69,10 @@ public class MessageManager : MonoBehaviour
         }
 
         // Update active events if any
-        foreach (var evt in worldManager.locationalEvents)
+        if (worldManager.GetCurrentEvent() != null)
         {
-            if (evt.IsActive)
-            {
-                promptCreator.AddEvent(evt.eventName, evt);
-            }
+            CharacterEvent evt = worldManager.GetCurrentEvent();
+            promptCreator.AddEvent(evt.eventName, evt);
         }
     }
 
