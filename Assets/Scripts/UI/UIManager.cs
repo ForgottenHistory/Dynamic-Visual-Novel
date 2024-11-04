@@ -43,6 +43,9 @@ public class UIManager : MonoBehaviour
     private MessageManager messageManager;
     private WorldManager worldManager;
     private PlayerData playerData;
+
+    private bool isProcessingRequest = false;
+
     private void Awake()
     {
         messageManager = masterReferencer.messageManager;
@@ -81,27 +84,68 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void OnInputSubmitted()
     {
+        // Prevent multiple requests
+        if (isProcessingRequest) return;
+
         string input = playerInputField.text;
-        if (string.IsNullOrWhiteSpace(input)) return;
-
-        // Add player's message to conversation
         string playerName = playerData.playerName;
-        messageManager.AddMessage(playerName, input);
-        UpdateDialogue(playerName, input, false);
-
-        // Clear input field
-        playerInputField.text = "";
-        playerInputField.ActivateInputField();
-
         string characterName = worldManager.GetCurrentEvent().choosenCharacter.characterName;
 
-        // Request AI response
-        messageManager.GetAIResponse(characterName, (response) =>
+        // Set processing flag and disable UI
+        isProcessingRequest = true;
+        SetUIInteractable(false);
+
+        if (string.IsNullOrWhiteSpace(input))
         {
-            Debug.Log("AI Response: " + response);
-            UpdateDialogue(characterName, response);
-            UpdateHistory();
-        });
+            // If input is empty, just get another AI response
+            messageManager.GetAIResponse(characterName, (response) =>
+            {
+                Debug.Log("AI Response (Continue): " + response);
+                UpdateDialogue(characterName, response);
+                UpdateHistory();
+
+                // Re-enable UI after response
+                isProcessingRequest = false;
+                SetUIInteractable(true);
+            });
+        }
+        else
+        {
+            // Add player's message to conversation
+            messageManager.AddMessage(playerName, input);
+            UpdateDialogue(playerName, input, false);
+
+            // Clear input field
+            playerInputField.text = "";
+
+            // Request AI response
+            messageManager.GetAIResponse(characterName, (response) =>
+            {
+                Debug.Log("AI Response: " + response);
+                UpdateDialogue(characterName, response);
+                UpdateHistory();
+
+                // Re-enable UI after response
+                isProcessingRequest = false;
+                SetUIInteractable(true);
+
+                // Re-focus input field
+                playerInputField.ActivateInputField();
+            });
+        }
+    }
+
+    /// <summary>
+    /// Enable/disable UI interaction during request processing
+    /// </summary>
+    private void SetUIInteractable(bool interactable)
+    {
+        playerInputField.interactable = interactable;
+        sendButton.interactable = interactable;
+
+        // Optionally disable other UI elements during processing
+        historyButton.interactable = interactable;
+        menuButton.interactable = interactable;
     }
 
     /// <summary>
@@ -218,5 +262,25 @@ public class UIManager : MonoBehaviour
 
         // Regenerate the last AI response
         messageManager.RegenerateLastResponse();
+    }
+
+    void Update()
+    {
+        UIInputs();
+    }
+
+    void UIInputs()
+    {
+        // Check for input to send an input
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            OnInputSubmitted();
+        }
+
+        // Regenerate last response
+        if (Input.GetKeyDown(KeyCode.Insert))
+        {
+            OnRegenerateClicked();
+        }
     }
 }
