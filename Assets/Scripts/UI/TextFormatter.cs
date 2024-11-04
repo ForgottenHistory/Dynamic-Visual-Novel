@@ -15,7 +15,7 @@ public class TextFormatter : MonoBehaviour
         public bool isItalic;
         public string openMarker;
         public string closeMarker;
-        
+
         public string GetHexColor()
         {
             return ColorUtility.ToHtmlStringRGB(color);
@@ -79,7 +79,7 @@ public class TextFormatter : MonoBehaviour
     private string CleanExistingColorTags(string input)
     {
         string cleanText = input;
-        
+
         // Remove all variations of color tags
         cleanText = Regex.Replace(cleanText, @"<color=[^>]*>", "", RegexOptions.IgnoreCase);
         cleanText = Regex.Replace(cleanText, @"<color=""[^""]*"">", "", RegexOptions.IgnoreCase);
@@ -93,14 +93,17 @@ public class TextFormatter : MonoBehaviour
     public string FormatText(string input)
     {
         if (string.IsNullOrEmpty(input)) return input;
-        
+
         string formattedText = CleanExistingColorTags(input);
-        
+
+        // First ensure all style markers are properly paired
+        formattedText = EnsureCompleteMarkers(formattedText);
+
         var sortedStyles = new List<TextStyle>(textStyles);
         sortedStyles.Sort((a, b) => b.openMarker.Length.CompareTo(a.openMarker.Length));
-        
+
         var replacements = new List<(int start, int length, string replacement)>();
-        
+
         foreach (var style in sortedStyles)
         {
             try
@@ -108,25 +111,24 @@ public class TextFormatter : MonoBehaviour
                 string escapedOpenMarker = Regex.Escape(style.openMarker);
                 string escapedCloseMarker = Regex.Escape(style.closeMarker);
                 string pattern = $"{escapedOpenMarker}(.*?){escapedCloseMarker}";
-                
+
                 var matches = Regex.Matches(formattedText, pattern);
-                
+
                 foreach (Match match in matches)
                 {
                     string content = match.Groups[1].Value;
-                    
+
                     StringBuilder tags = new StringBuilder();
                     StringBuilder closingTags = new StringBuilder();
-                    
-                    // Changed color tag format to match TMPro's expected format
-                    tags.Append($"<color=#{style.GetHexColor()}>");  // Removed quotes around the hex color
+
+                    tags.Append($"<color=#{style.GetHexColor()}>");
                     if (style.isItalic) tags.Append("<i>");
                     if (style.isBold) tags.Append("<b>");
-                    
+
                     if (style.isBold) closingTags.Append("</b>");
                     if (style.isItalic) closingTags.Append("</i>");
                     closingTags.Append("</color>");
-                    
+
                     string replacement = tags.ToString() + content + closingTags.ToString();
                     replacements.Add((match.Index, match.Length, replacement));
                 }
@@ -137,17 +139,66 @@ public class TextFormatter : MonoBehaviour
                 return input;
             }
         }
-        
+
         replacements.Sort((a, b) => b.start.CompareTo(a.start));
         foreach (var (start, length, replacement) in replacements)
         {
             formattedText = formattedText.Remove(start, length).Insert(start, replacement);
         }
-        
+
+        // Final check for unmatched style markers after all formatting
+        formattedText = DoFinalMarkerCheck(formattedText);
+
         Debug.Log($"Final formatted text: {formattedText}");
         return formattedText;
     }
-    
+
+    /// <summary>
+    /// Ensures all style markers are properly paired
+    /// </summary>
+    private string EnsureCompleteMarkers(string text)
+    {
+        foreach (var style in textStyles)
+        {
+            // Count occurrences of markers
+            int openCount = CountOccurrences(text, style.openMarker);
+            int closeCount = CountOccurrences(text, style.closeMarker);
+
+            // If there's an unmatched opening marker
+            while (openCount > closeCount)
+            {
+                text += style.closeMarker;
+                closeCount++;
+            }
+        }
+        return text;
+    }
+
+    /// <summary>
+    /// Does a final check for any unmatched style markers after color formatting
+    /// </summary>
+    private string DoFinalMarkerCheck(string text)
+    {
+        foreach (var style in textStyles)
+        {
+            // Find actual markers (not inside color tags)
+            var openMatches = Regex.Matches(text, $@"(?<!<[^>]*){Regex.Escape(style.openMarker)}");
+            var closeMatches = Regex.Matches(text, $@"(?<!<[^>]*){Regex.Escape(style.closeMarker)}");
+
+            if (openMatches.Count > closeMatches.Count)
+            {
+                // If we have an unmatched opening marker, add a closing marker at the end
+                text += style.closeMarker;
+            }
+        }
+        return text;
+    }
+
+    private int CountOccurrences(string text, string marker)
+    {
+        return Regex.Matches(text, Regex.Escape(marker)).Count;
+    }
+
     public void AddStyle(string name, Color color, bool isBold, bool isItalic, string openMarker, string closeMarker)
     {
         textStyles.Add(new TextStyle

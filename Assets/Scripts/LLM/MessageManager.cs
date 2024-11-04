@@ -120,7 +120,8 @@ public class MessageManager : MonoBehaviour
         // Send request to LLM client
         llmClient.SendRequest(lastPrompt, characterName, response =>
         {
-            string cleanedResponse = CleanupMessage(response);
+            Debug.Log("AI Response: " + response);
+            string cleanedResponse = TextCleaner.CleanupMessage(response);
 
             // Store the AI's message for potential regeneration
             lastAIMessage = new DialogueMessage(characterName, cleanedResponse);
@@ -147,36 +148,6 @@ public class MessageManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Cleans up the AI response by removing character names and formatting
-    /// </summary>
-    public static string CleanupMessage(string message, bool removeNewlines = true)
-    {
-        // Return empty string if message is null or empty
-        if (string.IsNullOrWhiteSpace(message))
-            return string.Empty;
-
-        // Find the position of the first colon
-        int colonIndex = message.IndexOf(':');
-
-        // If no colon is found, use the original message
-        string cleanedMessage = colonIndex == -1
-            ? message
-            : message.Substring(colonIndex + 1);
-
-        // Remove newlines and subsequent content if requested
-        if (removeNewlines)
-        {
-            int newlineIndex = cleanedMessage.IndexOfAny(new[] { '\r', '\n' });
-            if (newlineIndex != -1)
-            {
-                cleanedMessage = cleanedMessage.Substring(0, newlineIndex);
-            }
-        }
-
-        return cleanedMessage.Trim();
-    }
-
-    /// <summary>
     /// Regenerates the last AI response with the same context
     /// </summary>
     public void RegenerateLastResponse()
@@ -198,7 +169,7 @@ public class MessageManager : MonoBehaviour
         // Send new request to LLM client
         llmClient.SendRequest(lastPrompt, lastCharacterName, response =>
         {
-            string cleanedResponse = CleanupMessage(response);
+            string cleanedResponse = TextCleaner.CleanupMessage(response);
 
             // Store the new AI message
             lastAIMessage = new DialogueMessage(lastCharacterName, cleanedResponse);
@@ -241,7 +212,7 @@ public class MessageManager : MonoBehaviour
         // Send request to LLM client
         llmClient.SendRequest(systemPrompt, "SYSTEM", response =>
         {
-            string cleanedResponse = CleanupMessage(response, true);
+            string cleanedResponse = TextCleaner.CleanupMessage(response);
 
             if (request.AddToHistory)
             {
