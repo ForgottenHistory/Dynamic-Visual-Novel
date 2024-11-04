@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 [CreateAssetMenu(fileName = "New Character Event", menuName = "Game/Character Event")]
 public class CharacterEvent : ScriptableObject, IGetDescription
@@ -11,6 +12,10 @@ public class CharacterEvent : ScriptableObject, IGetDescription
     [TextArea(3, 10)]
     public string startMessage = null;
 
+    // If the event can be left by the player
+    // If not the player has to wait until allowed to by the character/s
+    public bool canLeave = true;
+
     private WorldManager worldManager = null;
 
     public bool IsActive { get; set; } = false;
@@ -18,28 +23,39 @@ public class CharacterEvent : ScriptableObject, IGetDescription
     public List<EventCondition> conditions = new List<EventCondition>();
     public Character choosenCharacter { get; private set; } = null;
 
+
+    private string startTimeDate = null;
+
     public void Startup(WorldManager worldManager)
     {
         this.worldManager = worldManager;
     }
 
-    public void StartEvent()
+    public void StartEvent(string startTimeDate)
     {
         // Start the event
         choosenCharacter = GetRandomCharacter();
         IsActive = true;
+        this.startTimeDate = startTimeDate;
     }
 
     // Function to check if the event can occur
     public bool CanOccur(Location location, List<Character> characters)
     {
         // Check if any of the conditions are met
+        int conditionsMet = 0;
         foreach (EventCondition condition in conditions)
         {
             if (condition.CheckCondition(location, characters))
             {
-                return true;
+                conditionsMet++;
             }
+        }
+
+        // If all conditions are met, return true
+        if (conditionsMet == conditions.Count)
+        {
+            return true;
         }
 
         // If none of the conditions are met, return false
@@ -93,87 +109,6 @@ public class CharacterEvent : ScriptableObject, IGetDescription
 
     public string GetDescription()
     {
-        return eventName + " = " + description;
-    }
-}
-
-/// <summary>
-/// A condition that can be checked for an event to occur.
-/// </summary>
-[CreateAssetMenu(fileName = "New Event Condition", menuName = "Game/Event Condition")]
-public class EventCondition : ScriptableObject
-{
-    public List<Location> locations = new List<Location>();
-    public List<Character> characters = new List<Character>();
-    public bool needsCharacterOnLocation = true;
-    public float chance = 100.0f; // 100% chance by default
-
-    // Function to check if the condition is met
-    public bool CheckCondition(Location location, List<Character> characters)
-    {
-        // Roll using chance
-        if (Random.Range(0.0f, 100.0f) > chance)
-        {
-            return false;
-        }
-
-        // Check if the location is in the list of locations
-        if (CheckLocation(location) == false)
-        {
-            return false;
-        }
-
-        // Check for characters 
-        if (CheckCharacters(characters) == false)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool CheckLocation(Location location)
-    {
-        // If the list of locations is empty, return true
-        // This means to accept all locations
-        if (locations.Count == 0 && location.isPublic)
-        {
-            return true;
-        }
-
-        // Check if the location is in the list of locations
-        if (locations.Contains(location))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private bool CheckCharacters(List<Character> characters)
-    {
-        // If the list of characters is empty, return true
-        // This means to accept all characters
-        if (this.characters.Count == 0)
-        {
-            // No characters present on this location, and it's needed
-            if (needsCharacterOnLocation && characters.Count == 0)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Check if all characters are in the list of characters
-        foreach (Character character in characters)
-        {
-            if (!this.characters.Contains(character))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return eventName + " = " + description + "\nStart time: " + startTimeDate;
     }
 }

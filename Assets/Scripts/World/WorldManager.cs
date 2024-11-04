@@ -141,7 +141,7 @@ public class WorldManager : MonoBehaviour
     {
         // Start the event
         currentEvent = newEvent;
-        currentEvent.StartEvent();
+        currentEvent.StartEvent(timeManager.GetFormattedTime());
 
         // Update message manager context
         messageManager.ClearMessages();
@@ -167,6 +167,11 @@ public class WorldManager : MonoBehaviour
             }
         }
         return charactersAtLocation;
+    }
+
+    public List<Character> GetCharactersAtPlayerLocation()
+    {
+        return GetCharactersAtLocation(playerLocation);
     }
 
     private void UpdateCharacters()
