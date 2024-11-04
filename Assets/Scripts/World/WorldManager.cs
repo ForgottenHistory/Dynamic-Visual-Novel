@@ -130,15 +130,26 @@ public class WorldManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Start a new character event.
+    /// </summary>
+    /// <param name="newEvent"></param>
     private void StartEvent(CharacterEvent newEvent)
     {
+        // Start the event
         currentEvent = newEvent;
         currentEvent.StartEvent();
 
         // Update message manager context
         messageManager.ClearMessages();
-        messageManager.AddMessage("SYSTEM", currentEvent.startMessage);
-        uiManager.UpdateDialogue("SYSTEM", currentEvent.startMessage);
+
+        // Replace keywords in start message
+        string startMessageReformatted = masterReferencer.promptCreator.ReplaceKeywords(
+            currentEvent.startMessage, currentEvent.choosenCharacter.characterName);
+
+        // Then send the message
+        messageManager.AddMessage("SYSTEM", startMessageReformatted);
+        uiManager.UpdateDialogue("SYSTEM", startMessageReformatted);
     }
 
     public List<Character> GetCharactersAtLocation(Location location)
