@@ -14,17 +14,25 @@ public class LocationManager : MonoBehaviour
 
 
     [Header("Settings")]
-    [SerializeField] private KeyCode toggleConnectionsKey = KeyCode.F3;
+    [SerializeField] private KeyCode toggleConnectionsKey = KeyCode.F6;
     [SerializeField] private bool showConnectionsOnStart = true;
 
     private bool areConnectionsVisible = false;
     private GameObject currentLayoutObject;
     private WorldManager worldManager;
+    private MessageManager messageManager;
+    private UIManager uiManager;
+    private PlayerData playerData;
+    public Location pendingLocation { get; set; }
+    private bool isTransitioning = false;
 
     private void Start()
-    {   
+    {
         // Get references
         worldManager = masterReferencer.worldManager;
+        messageManager = masterReferencer.messageManager;
+        uiManager = masterReferencer.uiManager;
+        playerData = masterReferencer.playerData;
 
         areConnectionsVisible = showConnectionsOnStart;
         // Move to the first location in the list
@@ -45,7 +53,7 @@ public class LocationManager : MonoBehaviour
     public void ToggleConnectionButtons()
     {
         areConnectionsVisible = !areConnectionsVisible;
-        
+
         if (areConnectionsVisible)
         {
             RefreshConnectionButtons();
@@ -67,20 +75,20 @@ public class LocationManager : MonoBehaviour
         List<Location> sortedConnections = worldManager.playerLocation.connections
             .OrderBy(x => x.locationName)
             .ToList();
-        
+
         int connectionCount = sortedConnections.Count;
 
         currentLayoutObject = buttonLayout.GetLayout(connectionCount);
         if (currentLayoutObject == null) return;
 
         Button[] buttons = currentLayoutObject.GetComponentsInChildren<Button>(true);
-        
+
         for (int i = 0; i < connectionCount; i++)
         {
             if (i < buttons.Length)
             {
                 Location destinationLocation = sortedConnections[i];
-                
+
                 TextMeshProUGUI buttonText = buttons[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (buttonText != null)
                 {
@@ -88,7 +96,8 @@ public class LocationManager : MonoBehaviour
                 }
 
                 buttons[i].onClick.RemoveAllListeners();
-                buttons[i].onClick.AddListener(() => {
+                buttons[i].onClick.AddListener(() =>
+                {
                     MoveToLocation(destinationLocation);
                     areConnectionsVisible = false;
                     currentLayoutObject.SetActive(false);
@@ -112,6 +121,63 @@ public class LocationManager : MonoBehaviour
             return;
         }
 
+        // If we're already at a location and not transitioning, start the farewell
+        if (worldManager.playerLocation != null && !isTransitioning)
+        {
+            StartTransition(location);
+        }
+        else if (isTransitioning && pendingLocation == location)
+        {
+            // Complete the transition
+            CompletePendingTransition();
+        }
+        else
+        {
+            // First location or direct movement
+            ExecuteLocationChange(location);
+        }
+    }
+
+    private void StartTransition(Location destination)
+    {
+        isTransitioning = true;
+        pendingLocation = destination;
+
+        if (worldManager.GetCharactersAtPlayerLocation().Count == 0)
+        {
+            CompletePendingTransition();
+            return;
+        }
+
+        // Instead of sending a farewell message immediately, update the input placeholder
+        uiManager.ChangeInputPlaceholder($"Type your farewell message before leaving for {destination.locationName}...");
+
+        // Wait for the player to type their farewell - they'll submit it through the normal input system
+        // The UIManager will handle this in its UIInputs method
+    }
+
+
+    public void CancelTransition()
+    {
+        if (isTransitioning)
+        {
+            isTransitioning = false;
+            pendingLocation = null;
+        }
+    }
+
+    private void CompletePendingTransition()
+    {
+        if (pendingLocation != null)
+        {
+            ExecuteLocationChange(pendingLocation);
+            isTransitioning = false;
+            pendingLocation = null;
+        }
+    }
+
+    private void ExecuteLocationChange(Location location)
+    {
         worldManager.PlayerMoveToLocation(location);
 
         if (backgroundImage != null)

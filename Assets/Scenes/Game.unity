@@ -2077,7 +2077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ea124ff1e27bf428d024e2a38b9a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 0.01
+  timeScale: 0.001
   startingTime: 18
 --- !u!1 &909724715
 GameObject:
@@ -2393,6 +2393,7 @@ MonoBehaviour:
   llmClient: {fileID: 2045237751}
   promptCreator: {fileID: 2045237754}
   playerData: {fileID: 11400000, guid: 14a4a422ff039b5469867fc5bd86eccb, type: 2}
+  locationManager: {fileID: 0}
 --- !u!4 &1074436829
 Transform:
   m_ObjectHideFlags: 0
@@ -3073,7 +3074,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 12.693, y: 0}
+  m_AnchoredPosition: {x: 12.693115, y: 0}
   m_SizeDelta: {x: -25.386, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1349089840
@@ -3939,11 +3940,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueText: {fileID: 1362993460}
   speakerNameText: {fileID: 1705140609}
+  inputPlaceholderText: {fileID: 1964176687}
   dialogueTypingEffect: {fileID: 1362993462}
   playerInputField: {fileID: 458298961}
   sendButton: {fileID: 107010117}
   historyButton: {fileID: 1691010633}
   menuButton: {fileID: 1821798225}
+  regenerateButton: {fileID: 1094933593}
+  moveLocationButton: {fileID: 132277046}
   historyText: {fileID: 1467690173}
   historyScrollRect: {fileID: 1956997527}
   masterReferencer: {fileID: 1074436828}
@@ -4457,7 +4461,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Nicole Demara
+  m_text: SYSTEM
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4788,7 +4792,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1894843160}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5406,7 +5410,7 @@ GameObject:
   - component: {fileID: 1964176687}
   - component: {fileID: 1964176686}
   m_Layer: 5
-  m_Name: Placeholder
+  m_Name: Input Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5919,7 +5923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.06666667, g: 0.09411765, b: 0.15294118, a: 0.392}
+  m_Color: {r: 0.06666667, g: 0.09411765, b: 0.15294118, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

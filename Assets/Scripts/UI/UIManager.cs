@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button historyButton;
     [SerializeField] private Button menuButton;
     [SerializeField] private Button regenerateButton;
+    [SerializeField] private Button moveLocationButton;
 
     [Header("Dialogue History")]
     [SerializeField] private TextMeshProUGUI historyText;
@@ -44,15 +45,18 @@ public class UIManager : MonoBehaviour
 
     private MessageManager messageManager;
     private WorldManager worldManager;
+    private LocationManager locationManager;
     private PlayerData playerData;
 
     private bool isProcessingRequest = false;
+    private bool hasSaidFarewell = false;
 
     private void Awake()
     {
         messageManager = masterReferencer.messageManager;
         worldManager = masterReferencer.worldManager;
         playerData = masterReferencer.playerData;
+        locationManager = masterReferencer.locationManager;
 
         if (textFormatter == null)
             textFormatter = FindFirstObjectByType<TextFormatter>();
@@ -88,6 +92,13 @@ public class UIManager : MonoBehaviour
     {
         // Prevent multiple requests
         if (isProcessingRequest) return;
+
+        // In the middle of a location transition
+        if (locationManager.pendingLocation != null)
+        {
+            HandleLocationTransition();
+            return;
+        }
 
         string input = playerInputField.text;
         string playerName = playerData.playerName;
@@ -147,6 +158,7 @@ public class UIManager : MonoBehaviour
         // Optionally disable other UI elements during processing
         historyButton.interactable = interactable;
         menuButton.interactable = interactable;
+        moveLocationButton.interactable = interactable;
 
         if (interactable)
         {
@@ -154,7 +166,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            if(isProcessingRequest)
+            if (isProcessingRequest)
                 inputPlaceholderText.text = "Generating response...";
             else
                 inputPlaceholderText.text = "Input disabled";
@@ -177,7 +189,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            if(isProcessingRequest)
+            if (isProcessingRequest)
                 inputPlaceholderText.text = "Generating response...";
             else
                 inputPlaceholderText.text = "Input disabled";
@@ -301,6 +313,11 @@ public class UIManager : MonoBehaviour
         messageManager.RegenerateLastResponse();
     }
 
+    public void ChangeInputPlaceholder(string placeholder)
+    {
+        inputPlaceholderText.text = placeholder;
+    }
+
     void Update()
     {
         UIInputs();
@@ -311,7 +328,8 @@ public class UIManager : MonoBehaviour
         // Check for input to send an input
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            OnInputSubmitted();
+            HandleLocationTransition();
+
         }
 
         // Regenerate last response
@@ -319,5 +337,59 @@ public class UIManager : MonoBehaviour
         {
             OnRegenerateClicked();
         }
+    }
+
+    void HandleLocationTransition()
+    {
+        if (locationManager.pendingLocation != null)
+        {
+            if (string.IsNullOrWhiteSpace(playerInputField.text) && hasSaidFarewell)
+            {
+                // If no message is typed, proceed with location change
+                locationManager.MoveToLocation(locationManager.pendingLocation);
+            }
+            else if (!string.IsNullOrWhiteSpace(playerInputField.text) && hasSaidFarewell)
+            {
+                hasSaidFarewell = false;
+                locationManager.CancelTransition();
+            }
+            else
+            {
+                SayFarewell();
+            }
+        }
+        else
+        {
+            OnInputSubmitted();
+        }
+    }
+
+    void SayFarewell()
+    {
+        // Send the farewell message and wait for AI response
+        string farewellMessage = playerInputField.text;
+        messageManager.AddMessage(playerData.playerName, farewellMessage);
+        UpdateDialogue(playerData.playerName, farewellMessage, false);
+
+        // Clear input field
+        playerInputField.text = "";
+
+        // Get AI's response to the farewell
+        SetUIInteractable(false);
+        ChangeInputPlaceholder("Waiting for response...");
+
+        messageManager.GetAIResponse(
+            worldManager.GetCurrentEvent().choosenCharacter.characterName,
+            (response) =>
+            {
+                UpdateDialogue(
+                    worldManager.GetCurrentEvent().choosenCharacter.characterName,
+                    response
+                );
+                SetUIInteractable(true);
+                ChangeInputPlaceholder("Press Enter to leave, or type to keep talking...");
+                hasSaidFarewell = true;
+            }
+        );
     }
 }
