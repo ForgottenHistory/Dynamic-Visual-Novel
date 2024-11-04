@@ -28,22 +28,56 @@ public class World : ScriptableObject, IGetDescription
     public int beauty = 5;
     public int politicalCorruption = 5;
     public int religiousity = 5;
-
+    public int sexual = 5;
+    public int xenophobia = 5;
 
     public string GetDescription()
     {
         string prompt = worldName + " = " + description + "\nWorld Stats = ";
         prompt += "Population: " + population + ", ";
-        prompt += "Crime Rate: " + crimeRate + ", ";
-        prompt += "Pollution Rate: " + pollutionRate + ", ";
-        prompt += "Happiness Rate: " + happinessRate + ", ";
-        prompt += "Economic Richness: " + economicRichness + ", ";
-        prompt += "Education: " + education + ", ";
-        prompt += "Health: " + health + ", ";
-        prompt += "Beauty: " + beauty + ", ";
-        prompt += "Political Corruption: " + politicalCorruption + ", ";
-        prompt += "Religiousity: " + religiousity + ", ";
+        prompt += "Crime Rate: " + NumberScaleToText(crimeRate) + ", ";
+        prompt += "Pollution Rate: " + NumberScaleToText(pollutionRate) + ", ";
+        prompt += "Happiness Rate: " + NumberScaleToText(happinessRate) + ", ";
+        prompt += "Economic Richness: " + NumberScaleToText(economicRichness) + ", ";
+        prompt += "Education: " + NumberScaleToText(education) + ", ";
+        prompt += "Health: " + NumberScaleToText(health) + ", ";
+        prompt += "Beauty: " + NumberScaleToText(beauty) + ", ";
+        prompt += "Political Corruption: " + NumberScaleToText(politicalCorruption) + ", ";
+        prompt += "Religiousity: " + NumberScaleToText(religiousity) + ", ";
+        prompt += "Sexual Activity: " + NumberScaleToText(sexual) + ", ";
+        prompt += "Xenophobia: " + NumberScaleToText(xenophobia) + "\n";
 
         return prompt;
+    }
+
+    string NumberScaleToText(int number)
+    {
+        switch (number)
+        {
+            case 0:
+                return "None";
+            case 1:
+                return "Very Low";
+            case 2:
+                return "Low";
+            case 3:
+                return "Moderate";
+            case 4:
+                return "Average";
+            case 5:
+                return "Normal";
+            case 6:
+                return "Above Average";
+            case 7:
+                return "High";
+            case 8:
+                return "Very High";
+            case 9:
+                return "Extreme";
+            case 10:
+                return "Maximum";
+            default:
+                return "Unknown";
+        }
     }
 }
