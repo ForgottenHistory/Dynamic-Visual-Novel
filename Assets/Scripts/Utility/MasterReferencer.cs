@@ -8,5 +8,5 @@ public class MasterReferencer : MonoBehaviour
     public LLMClient llmClient;
     public PromptCreator promptCreator;
     public PlayerData playerData;
-    
+    public LocationManager locationManager;
 }
