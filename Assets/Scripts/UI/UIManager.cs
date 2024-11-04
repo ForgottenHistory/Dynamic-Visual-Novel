@@ -162,6 +162,29 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Set input field interactable state
+    /// </summary>
+    /// <param name="interactable"></param>
+    public void SetInputInteractable(bool interactable)
+    {
+        playerInputField.interactable = interactable;
+        sendButton.interactable = interactable;
+        regenerateButton.interactable = interactable;
+
+        if (interactable)
+        {
+            inputPlaceholderText.text = "Type your response...";
+        }
+        else
+        {
+            if(isProcessingRequest)
+                inputPlaceholderText.text = "Generating response...";
+            else
+                inputPlaceholderText.text = "Input disabled";
+        }
+    }
+
+    /// <summary>
     /// Updates the dialogue UI with formatted text
     /// </summary>
     public void UpdateDialogue(string speaker, string message, bool useTypewriter = true)

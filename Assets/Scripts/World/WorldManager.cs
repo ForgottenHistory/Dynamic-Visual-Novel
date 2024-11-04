@@ -69,7 +69,6 @@ public class WorldManager : MonoBehaviour
 
         // Initial context update
         UpdateMessageManagerContext();
-        uiManager.SetUIInteractable(false);
     }
 
     private void OnDestroy()
@@ -130,6 +129,7 @@ public class WorldManager : MonoBehaviour
         {
             messageManager.AddMessage("SYSTEM", "Nothing happening at this location, keep exploring!");
             uiManager.UpdateDialogue("SYSTEM", "Nothing happening at this location, keep exploring!");
+            uiManager.SetInputInteractable(false);
         }
     }
 
