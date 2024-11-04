@@ -104,6 +104,8 @@ public class WorldManager : MonoBehaviour
     {
         // Move the player to the location
         playerLocation = location;
+        if(currentEvent != null)
+            currentEvent.EndEvent();
 
         // Clear any existing conversation
         messageManager.ClearMessages();

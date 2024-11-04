@@ -102,7 +102,6 @@ public class LocationManager : MonoBehaviour
     public void MoveLocation()
     {
         ToggleConnectionButtons();
-        MoveToLocation(worldManager.playerLocation);
     }
 
     public void MoveToLocation(Location location)
