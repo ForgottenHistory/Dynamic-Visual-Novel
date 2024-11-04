@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     [Header("Dialogue UI")]
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI speakerNameText;
+    [SerializeField] private TextMeshProUGUI inputPlaceholderText;
 
     [Header("Typing Effect")]
     [SerializeField] private TypingEffect dialogueTypingEffect;
@@ -25,6 +26,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button sendButton;
     [SerializeField] private Button historyButton;
     [SerializeField] private Button menuButton;
+    [SerializeField] private Button regenerateButton;
 
     [Header("Dialogue History")]
     [SerializeField] private TextMeshProUGUI historyText;
@@ -136,14 +138,27 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Enable/disable UI interaction during request processing
     /// </summary>
-    private void SetUIInteractable(bool interactable)
+    public void SetUIInteractable(bool interactable)
     {
         playerInputField.interactable = interactable;
         sendButton.interactable = interactable;
+        regenerateButton.interactable = interactable;
 
         // Optionally disable other UI elements during processing
         historyButton.interactable = interactable;
         menuButton.interactable = interactable;
+
+        if (interactable)
+        {
+            inputPlaceholderText.text = "Type your response...";
+        }
+        else
+        {
+            if(isProcessingRequest)
+                inputPlaceholderText.text = "Generating response...";
+            else
+                inputPlaceholderText.text = "Input disabled";
+        }
     }
 
     /// <summary>
@@ -257,6 +272,7 @@ public class UIManager : MonoBehaviour
     {
         // Update to show us regenerating the last AI response
         UpdateDialogue(worldManager.GetCurrentEvent().choosenCharacter.characterName, "Regenerating last AI response...");
+        SetUIInteractable(false);
 
         // Regenerate the last AI response
         messageManager.RegenerateLastResponse();

@@ -69,6 +69,7 @@ public class WorldManager : MonoBehaviour
 
         // Initial context update
         UpdateMessageManagerContext();
+        uiManager.SetUIInteractable(false);
     }
 
     private void OnDestroy()
@@ -144,6 +145,7 @@ public class WorldManager : MonoBehaviour
 
         // Update message manager context
         messageManager.ClearMessages();
+        uiManager.SetUIInteractable(true);
 
         // Replace keywords in start message
         string startMessageReformatted = masterReferencer.promptCreator.ReplaceKeywords(
