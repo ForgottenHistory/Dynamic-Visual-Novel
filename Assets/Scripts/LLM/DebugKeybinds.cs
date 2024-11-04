@@ -62,5 +62,14 @@ public class DebugKeybinds : MonoBehaviour
                 Debug.Log("Custom Instruction: " + customInstruction);
             });
         }
+        else if(Input.GetKeyDown(KeyCode.F5))
+        {
+            // Request a relationship analysis
+            var relationshipRequest = new SystemMessages.RelationshipRequest();
+            messageManager.SendSystemMessage(relationshipRequest, relationshipAnalysis =>
+            {
+                Debug.Log("Relationship Analysis: " + relationshipAnalysis);
+            });
+        }
     }
 }

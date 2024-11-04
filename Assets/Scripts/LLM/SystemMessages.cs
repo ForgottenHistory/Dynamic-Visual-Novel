@@ -76,6 +76,26 @@ public class SystemMessages
     }
 
     /// <summary>
+    /// Request to summarize key plot points
+    /// </summary>
+    public class RelationshipRequest : SystemRequest
+    {
+        private readonly int messageCount;
+
+        public RelationshipRequest(bool addToHistory = true, bool showOnUI = false)
+        {
+            this.AddToHistory = addToHistory;
+            this.ShowOnUI = showOnUI;
+        }
+
+        public override string GeneratePrompt(List<DialogueMessage> history)
+        {
+            return "Analyze the emotional state of all characters in the recent conversation." +
+                "What would you consider them now to be in terms of their relationship? Reply with only a few words.";
+        }
+    }
+
+    /// <summary>
     /// Request for a custom system instruction
     /// </summary>
     public class CustomRequest : SystemRequest
