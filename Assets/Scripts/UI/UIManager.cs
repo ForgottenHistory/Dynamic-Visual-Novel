@@ -100,7 +100,6 @@ public class UIManager : MonoBehaviour
             // If input is empty, just get another AI response
             messageManager.GetAIResponse(characterName, (response) =>
             {
-                Debug.Log("AI Response (Continue): " + response);
                 UpdateDialogue(characterName, response);
                 UpdateHistory();
 
@@ -121,7 +120,6 @@ public class UIManager : MonoBehaviour
             // Request AI response
             messageManager.GetAIResponse(characterName, (response) =>
             {
-                Debug.Log("AI Response: " + response);
                 UpdateDialogue(characterName, response);
                 UpdateHistory();
 
