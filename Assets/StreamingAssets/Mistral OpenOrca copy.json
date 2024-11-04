@@ -1,0 +1,13 @@
+{
+    "apiToken": "sk-MnrlBA6_6c7wadr01XcKpQ",
+    "apiUrl": "https://api.totalgpt.ai/chat/completions",
+    "model": "Midnight-Miqu-70B-v1.5",
+    "temp": 1.0,
+    "top_p": 0.4,
+    "top_k": 40,
+    "rep_pen": 1.18,
+    "freq_pen": 0.0,
+    "presence_pen": 0.0,
+    "genamt": 150,
+    "dry_sequence_breakers": ["\n", ":", "\"", "*"]
+}
