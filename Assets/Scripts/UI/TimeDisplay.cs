@@ -12,12 +12,10 @@ public class TimeDisplay : MonoBehaviour
     [SerializeField] private Color nightColor = new Color(0.8f, 0.9f, 1f); // Subtle cool blue
     
     [Header("Transition Settings")]
-    [SerializeField] private float colorTransitionDuration = 1f; // How long it takes to transition between colors
     [SerializeField] [Range(0f, 24f)] private float nightStartHour = 18f; // When night begins (6 PM)
     [SerializeField] [Range(0f, 24f)] private float dayStartHour = 6f; // When day begins (6 AM)
 
     private TextMeshProUGUI timeText;
-    private float currentTransitionTime = 0f;
 
     private void Awake()
     {
