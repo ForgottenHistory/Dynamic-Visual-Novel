@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// <c>Character</c> represents a character in the game world.
+/// </summary>
 [CreateAssetMenu(fileName = "New Character", menuName = "Game/Character")]
 public class Character : ScriptableObject, IGetDescription
 {
@@ -9,9 +12,11 @@ public class Character : ScriptableObject, IGetDescription
         MALE,
         FEMALE
     }
-
+   
+    ///////////////////////////////////////////////////////////////////////////
     // Constants
-
+    ///////////////////////////////////////////////////////////////////////////
+    
     // Descriptions for each character
     public string characterName;
     public int age;
@@ -22,9 +27,11 @@ public class Character : ScriptableObject, IGetDescription
     [TextArea(3, 10), Tooltip("A short description of the character. Used when referred to in events.")]
     public string shortDescription;
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Personality traits
+
     [Header("Personality traits")]
 
-    // Personality traits
     [Tooltip("How social/outgoing they are"), Range(0, 100)]
     public int extroversion;
     [Tooltip("How cooperative/warm they are"), Range(0, 100)]
@@ -38,7 +45,9 @@ public class Character : ScriptableObject, IGetDescription
 
     [Header("Values/Interests")]
 
+    ///////////////////////////////////////////////////////////////////////////
     // Values/Interests
+
     [Tooltip("Focus on goals/career"), Range(0, 100)]
     public int ambition;
     [Tooltip("Respect for rules/customs"), Range(0, 100)]
@@ -48,7 +57,10 @@ public class Character : ScriptableObject, IGetDescription
     [Tooltip("Love of learning/thinking"), Range(0, 100)]
     public int intellectualism;
 
+    ///////////////////////////////////////////////////////////////////////////
     // Dynamic
+    ///////////////////////////////////////////////////////////////////////////
+
     // Use backing fields for properties
     private int _hunger = 0;
 
@@ -61,10 +73,14 @@ public class Character : ScriptableObject, IGetDescription
         set { _hunger = Mathf.Clamp(value, 0, 100); }
     }
 
-    // Relations to other characters, including player
-    public Dictionary<string, string> relationships = new Dictionary<string, string>();
-    
     List<Memory> memories = new List<Memory>();
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Add a memory to the character's memory list
+    /// </summary>
+    /// <param name="memory">The memory to add</param>
+    /// <param name="datetime">The date and time the memory was created</param>
     public void AddMemory(string memory, string datetime)
     {
         Memory newMemory = new Memory();
@@ -73,6 +89,11 @@ public class Character : ScriptableObject, IGetDescription
         memories.Add(newMemory);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Get the character's memories
+    /// </summary>
+    /// <returns>List of Memory</returns>
     public List<Memory> GetMemories()
     {
         return memories;
@@ -84,6 +105,11 @@ public class Character : ScriptableObject, IGetDescription
     // Components
     private WorldManager worldManager;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Startup the character
+    /// </summary>
+    /// <param name="worldManager">The world manager</param>
     public void Startup(WorldManager worldManager)
     {
         // Set the world manager
