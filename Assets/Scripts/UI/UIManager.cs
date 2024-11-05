@@ -337,6 +337,12 @@ public class UIManager : MonoBehaviour
         {
             OnRegenerateClicked();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // Debug reset for when requests get stuck
+            SetUIInteractable(true);
+        }
     }
 
     void HandleLocationTransition()
