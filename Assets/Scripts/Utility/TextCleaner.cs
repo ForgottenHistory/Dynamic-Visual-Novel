@@ -24,14 +24,21 @@ public class TextCleaner
     /// <summary>
     /// Main cleanup function that applies all formatting rules
     /// </summary>
-    public static string CleanupMessage(string message, bool removeNewlines = true, bool capitalize = true, bool removeIncomplete = true)
+    public static string CleanupMessage(string message, bool removeNewlines = false, bool capitalize = true, bool removeIncomplete = true)
     {
         if (string.IsNullOrWhiteSpace(message))
             return string.Empty;
 
         // Remove character name prefix if present
         string cleanedMessage = RemoveCharacterPrefix(message);
-        cleanedMessage = RemoveQuotationMarks(cleanedMessage);
+        cleanedMessage = cleanedMessage.Replace("\"", "");
+
+        int countUntilFirstNewline = cleanedMessage.IndexOf('\n');
+        if(countUntilFirstNewline < 150)
+            cleanedMessage = RemoveAfterSecondNewline(cleanedMessage);
+
+        cleanedMessage = cleanedMessage.Replace("\n", " ");
+        cleanedMessage = cleanedMessage.Replace("\r", " ");
 
         // Remove newlines if requested
         if (removeNewlines)
@@ -113,12 +120,22 @@ public class TextCleaner
 
         // Split the text into sentences using regex to handle multiple types of ending punctuation
         string[] sentences = Regex.Split(text, @"(?<=[.!?])\s+");
-        
+
         for (int i = 0; i < sentences.Length; i++)
         {
             if (!string.IsNullOrEmpty(sentences[i]))
             {
                 sentences[i] = CapitalizeSentence(sentences[i]);
+            }
+        }
+
+        // Look for small caps directly next to big caps (as in, without a space in between)
+        // Replace them with a period and a space
+        for (int i = 0; i < sentences.Length - 1; i++)
+        {
+            if (char.IsUpper(sentences[i][sentences[i].Length - 1]) && char.IsLower(sentences[i + 1][0]))
+            {
+                sentences[i] += ".";
             }
         }
 
@@ -150,8 +167,31 @@ public class TextCleaner
         });
     }
 
-    private static string RemoveQuotationMarks(string message)
+    private static string RemoveAfterSecondNewline(string message)
     {
-        return message.Replace("\"", "");
+        if (string.IsNullOrEmpty(message))
+            return message;
+
+        // Find the first newline and check if there's a second one
+        // If there is a second one, remove that second one and everything after it
+        // Second newline cannot be right after the first one
+        int firstNewlineIndex = message.IndexOf('\n');
+        if (firstNewlineIndex != -1)
+        {
+            int relevantNewline = message.IndexOf('\n', firstNewlineIndex + 1);
+            // Second newline cannot be right after the first one
+            if(relevantNewline == firstNewlineIndex + 1)
+            {   
+                // Find the next
+                relevantNewline = message.IndexOf('\n', relevantNewline + 1);
+            }
+
+            if (relevantNewline != -1)
+            {
+                message = message.Substring(0, relevantNewline);
+            }
+        }
+
+        return message;
     }
 }

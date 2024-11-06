@@ -37,6 +37,7 @@ public class TextFormatter : MonoBehaviour
                 openMarker = "*",
                 closeMarker = "*"
             },
+            /**
             new TextStyle
             {
                 name = "Thought",
@@ -73,6 +74,7 @@ public class TextFormatter : MonoBehaviour
                 openMarker = "#",
                 closeMarker = "#"
             }
+            */
         };
     }
 
