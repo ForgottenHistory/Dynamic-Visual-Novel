@@ -9,4 +9,5 @@ public class MasterReferencer : MonoBehaviour
     public PromptCreator promptCreator;
     public PlayerData playerData;
     public LocationManager locationManager;
+    public TimeManager timeManager;
 }
