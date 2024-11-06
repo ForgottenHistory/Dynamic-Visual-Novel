@@ -7,6 +7,7 @@ public class SystemMessages
     /// </summary>
     public abstract class SystemRequest
     {
+        public string characterName;
         public bool AddToHistory { get; protected set; }
         public bool ShowOnUI { get; protected set; }
 
@@ -18,8 +19,6 @@ public class SystemMessages
     /// </summary>
     public class MemorySummaryRequest : SystemRequest
     {
-        private readonly string characterName;
-
         public MemorySummaryRequest(string characterName, bool addToHistory = false, bool showOnUI = false)
         {
             this.characterName = characterName;
@@ -30,8 +29,8 @@ public class SystemMessages
         public override string GeneratePrompt(List<DialogueMessage> history)
         {
             return "Please create a concise memory summary from {{char}}'s perspective of the recent conversation. " +
-                   "Focus on key events, decisions, and emotional moments that would be important for the character to remember. " +
-                   "Format the summary in first person as if {{char}} is recording their thoughts.";
+                   "Summarize the conversation in a very brief format. Only a few sentences at maximum." +
+                   "Format the summary in first person as if {{char}} is recording their thoughts. ALWAYS mention the people involved.";
         }
     }
 

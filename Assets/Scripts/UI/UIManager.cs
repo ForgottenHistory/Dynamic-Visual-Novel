@@ -44,6 +44,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject mapPanel;
 
     private MessageManager messageManager;
+    private TimeManager timeManager;
     private WorldManager worldManager;
     private LocationManager locationManager;
     private PlayerData playerData;
@@ -57,6 +58,7 @@ public class UIManager : MonoBehaviour
         worldManager = masterReferencer.worldManager;
         playerData = masterReferencer.playerData;
         locationManager = masterReferencer.locationManager;
+        timeManager = masterReferencer.timeManager;
 
         if (textFormatter == null)
             textFormatter = FindFirstObjectByType<TextFormatter>();
@@ -351,8 +353,24 @@ public class UIManager : MonoBehaviour
         {
             if (string.IsNullOrWhiteSpace(playerInputField.text) && hasSaidFarewell)
             {
-                // If no message is typed, proceed with location change
-                locationManager.MoveToLocation(locationManager.pendingLocation);
+                // Create a memory from the interaction
+                Character character = worldManager.GetCurrentEvent().choosenCharacter;
+                var memoryRequest = new SystemMessages.MemorySummaryRequest(character.characterName);
+
+                // Update UI to show memory creation
+                SetUIInteractable(false);
+                ChangeInputPlaceholder("Making a memory...");
+
+                messageManager.SendSystemMessage(memoryRequest, memory =>
+                {
+                    Debug.Log("Memory Summary: " + memory);
+                    character.AddMemory(memory, timeManager.GetFormattedTimeWithDate());
+                    SetUIInteractable(true);
+
+                    // Proceed with location change
+                    locationManager.MoveToLocation(locationManager.pendingLocation);
+                });
+                
             }
             else if (!string.IsNullOrWhiteSpace(playerInputField.text) && hasSaidFarewell)
             {

@@ -199,29 +199,29 @@ public class MessageManager : MonoBehaviour
 
         // Generate the a system prompt
         string generatedRequestPrompt = request.GeneratePrompt(conversationHistory);
-        string systemPrompt = lastPrompt + "\n SYSTEM: " + generatedRequestPrompt;
-        systemPrompt = promptCreator.ReplaceKeywords(systemPrompt, "SYSTEM");
+        string systemPrompt = lastPrompt + "\n" + request.characterName + ": " + generatedRequestPrompt;
+        systemPrompt = promptCreator.ReplaceKeywords(systemPrompt, request.characterName);
 
         // Show on UI if requested
         if (request.ShowOnUI)
         {
-            uiManager.UpdateDialogue("SYSTEM", generatedRequestPrompt);
+            uiManager.UpdateDialogue(request.characterName, generatedRequestPrompt);
         }
 
         // Send request to LLM client
-        llmClient.SendRequest(systemPrompt, "SYSTEM", response =>
+        llmClient.SendRequest(systemPrompt, request.characterName, response =>
         {
             string cleanedResponse = TextCleaner.CleanupMessage(response);
 
             if (request.AddToHistory)
             {
-                var systemMessage = new DialogueMessage("SYSTEM", cleanedResponse);
+                var systemMessage = new DialogueMessage(request.characterName, cleanedResponse);
                 conversationHistory.Add(systemMessage);
             }
 
             if (request.ShowOnUI && uiManager != null)
             {
-                uiManager.UpdateDialogue("SYSTEM", cleanedResponse);
+                uiManager.UpdateDialogue(request.characterName, cleanedResponse);
             }
 
             callback?.Invoke(cleanedResponse);

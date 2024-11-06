@@ -79,13 +79,11 @@ public class Character : ScriptableObject, IGetDescription
     /// <summary>
     /// Add a memory to the character's memory list
     /// </summary>
-    /// <param name="memory">The memory to add</param>
-    /// <param name="datetime">The date and time the memory was created</param>
+    /// <param name="memory">The memory to add.</param>
+    /// <param name="datetime">The date and time the memory was created.</param>
     public void AddMemory(string memory, string datetime)
     {
-        Memory newMemory = new Memory();
-        newMemory.dateTime = datetime;
-        newMemory.memory = memory;
+        Memory newMemory = new Memory(memory, datetime);
         memories.Add(newMemory);
     }
 
@@ -136,6 +134,16 @@ public class Character : ScriptableObject, IGetDescription
 
     public string GetDescription()
     {
-        return characterName + " = " + description + "\n" + "Age: " + age + "\n" + "\n" + "Hunger: " + NumberScaleToText.HundredScaleToText(hunger);
+        return characterName + " = " + description + "\n" + "Age: " + age + "\nMemories = [" + GetMemoryString() 
+        + "]\nStats[" + "Hunger: " + NumberScaleToText.HundredScaleToText(hunger) + "]";
+    }
+
+    private string GetMemoryString() {
+        // Memory inherits from IGetDescription
+        string memoryString = "";
+        foreach (Memory memory in memories) {
+            memoryString += memory.GetDescription() + "\n";
+        }
+        return memoryString;
     }
 }

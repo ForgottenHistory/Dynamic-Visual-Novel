@@ -89,6 +89,14 @@ public class TimeManager : MonoBehaviour, IGetDescription
     }
 
     /// <summary>
+    /// Get a formatted time with date string (e.g., "3:30 PM on 1/1/2022")
+    /// </summary>
+    public string GetFormattedTimeWithDate()
+    {
+        return $"{GetFormattedTime()} on {DateTime.Now.ToShortDateString()}";
+    }
+    
+    /// <summary>
     /// Gets time period of day (Morning, Afternoon, Evening, Night)
     /// </summary>
     public string GetTimePeriod()
