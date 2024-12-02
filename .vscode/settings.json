@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Dynamic-Visual-Novel.sln"
+    "dotnet.defaultSolution": "Dynamic-Visual-Novel.sln",
+    "github.copilot.editor.enableAutoCompletions": true
 }
