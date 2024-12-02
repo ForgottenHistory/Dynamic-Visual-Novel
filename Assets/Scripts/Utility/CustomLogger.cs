@@ -2,13 +2,49 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 /// <summary>
 /// CustomLogger class for logging messages with various log levels and output options
 /// </summary>
 public class CustomLogger
 {
-    #region Fields and Properties
+    #region Static Members
+    
+    /// <summary>
+    /// Dictionary of logger instances with unique names
+    /// </summary>
+    private static readonly Dictionary<string, CustomLogger> loggers = new Dictionary<string, CustomLogger>();
+    
+    /// <summary>
+    /// Returns a logger instance with the specified name. If the logger does not exist, a new instance will be created.
+    /// </summary>
+    /// <param name="loggerName"></param>
+    /// <param name="enableConsoleOutput"></param>
+    /// <returns></returns>
+    public static CustomLogger GetLogger(string loggerName, bool enableConsoleOutput = false)
+    {
+        if (loggers.TryGetValue(loggerName, out CustomLogger logger))
+        {
+            return logger;
+        }
+        
+        logger = new CustomLogger(loggerName, enableConsoleOutput);
+        loggers[loggerName] = logger;
+        return logger;
+    }
+    
+    /// <summary>
+    /// Clears all logger instances
+    /// </summary>
+    public static void ClearLoggers()
+    {
+        loggers.Clear();
+    }
+    
+    #endregion
+
+    #region Properties
 
     /// <summary>
     /// File path for logging output
@@ -39,7 +75,7 @@ public class CustomLogger
     /// </summary>
     /// <param name="loggerName">Unique name for the logger instance</param>
     /// <param name="enableConsoleOutput">Flag to enable or disable console output (default: false)</param>
-    public CustomLogger(string loggerName, bool enableConsoleOutput = false)
+    private CustomLogger(string loggerName, bool enableConsoleOutput = false)
     {
         // Set logger name and console output flag
         LoggerName = loggerName;
@@ -102,7 +138,7 @@ public class CustomLogger
 
     #endregion
 
-    #region Log Methods
+    #region Logging
 
     /// <summary>
     /// Logs a message with the specified log level. Error and warning levels will be written to console regardless of the writeToConsole flag.
@@ -212,7 +248,7 @@ public class CustomLogger
 
     #endregion
 
-    #region Convenience Methods
+    #region Convenience
 
     /// <summary>
     /// Logs an informational message
@@ -240,7 +276,7 @@ public class CustomLogger
 
     #endregion
 
-    #region Helper Method
+    #region Helpers
 
     /// <summary>
     /// Returns the full path to the log file
