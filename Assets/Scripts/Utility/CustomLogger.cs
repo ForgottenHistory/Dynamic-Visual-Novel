@@ -50,7 +50,7 @@ public class CustomLogger
         string fileName = $"{loggerName}_{timestamp}.log";
 
         // Define log directory path
-        string logDirectory = Path.Combine(Application.dataPath, "Logs");
+        string logDirectory = Path.Combine(Application.dataPath, "Logs/" + loggerName);
         logFilePath = Path.Combine(logDirectory, fileName);
 
         // Ensure log directory exists
